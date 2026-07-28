@@ -59,8 +59,8 @@ ${productDetails}
 
         );
 
-      console.log(
-    `✅ Sent → ${pincode} | ${product.product_name} | Qty: ${product.inventory_quantity}`
+ console.log(
+    `✅ Sent → ${pincode} | ${productTitle} | Qty: ${product.inventory_quantity}`
 );
 
     }
