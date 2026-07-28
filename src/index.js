@@ -11,10 +11,10 @@ const {
 const {
     loadStockMap
 } = require("./models/stockModel");
+
 const {
     loadUserNotifiedMap
 } = require("./models/userNotificationModel");
-
 
 const {
     getProducts
@@ -26,8 +26,7 @@ async function checkStock() {
 
     if (isRunning) {
 
-        console.log("Previous check still running...");
-
+        console.log("⏳ Previous scan still running. Skipping...");
         return;
 
     }
@@ -44,8 +43,8 @@ async function checkStock() {
         const stockMap =
             await loadStockMap();
 
-            const userNotifiedMap =
-    await loadUserNotifiedMap();
+        const userNotifiedMap =
+            await loadUserNotifiedMap();
 
         const activeGroupedPreferences = {};
 
@@ -62,9 +61,9 @@ async function checkStock() {
 
                 activeGroupedPreferences[storeId] = {
 
-    users: activeUsers
+                    users: activeUsers
 
-};
+                };
 
             }
 
@@ -76,91 +75,60 @@ async function checkStock() {
 
             try {
 
-                console.log(`Checking store ${storeId}`);
+                const storeStart = Date.now();
 
-                const apiStart = Date.now();
+                const products = await getProducts(storeId);
 
-                const products = await getProducts(
+                productsFound += await processProducts(
 
-                    storeId,
+                    {
+                        data: products
+                    },
 
-                   
+                    group.users,
 
-                );
+                    stockMap,
 
-                console.log(
+                    userNotifiedMap,
 
-                    `   API Response   : ${Date.now() - apiStart} ms`
+                    sendNotification,
 
-                );
+                    shouldNotify,
 
-                const processStart = Date.now();
-
-               productsFound += await processProducts(
-
-    {
-        data: products
-    },
-
-    group.users,
-
-    stockMap,
-
-    userNotifiedMap,
-
-    sendNotification,
-
-    shouldNotify,
-
-    storeId
-
-);
-
-                console.log(
-
-                    `   Process Data   : ${Date.now() - processStart} ms`
+                    storeId
 
                 );
 
                 console.log(
-
-                    `   TOTAL          : ${Date.now() - apiStart} ms\n`
-
+                    `📦 Store: ${storeId} | ${((Date.now() - storeStart) / 1000).toFixed(1)}s`
                 );
 
             }
 
             catch (err) {
 
-                console.log(
-
-                    `Error checking store ${storeId}:`,
-
-                    err.message
-
+                console.error(
+                    `❌ Store ${storeId}: ${err.message}`
                 );
 
             }
 
         }
 
-        console.log(
-
-`====================================
-Stock Check Finished
-====================================
-Time: ${(Date.now() - totalStart) / 1000} sec
-Products Found: ${productsFound}
-Stores Checked: ${Object.keys(activeGroupedPreferences).length}
-====================================`
-
-        );
+        console.log(`
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Scan Complete
+📦 Stores   : ${Object.keys(activeGroupedPreferences).length}
+🛒 Products : ${productsFound}
+⏱️ Time     : ${((Date.now() - totalStart) / 1000).toFixed(1)}s
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+`);
 
     }
 
     catch (err) {
 
-        console.log(err);
+        console.error("❌ Stock checker failed:", err.message);
 
     }
 
@@ -174,21 +142,15 @@ Stores Checked: ${Object.keys(activeGroupedPreferences).length}
 
 function startStockChecker() {
 
+    console.log("🚀 Stock checker started");
+
     checkStock();
 
     setInterval(() => {
 
-        console.log("\n=================================");
-
         console.log(
-
-            "Checking stock:",
-
-            new Date().toLocaleString()
-
+            `\n🔄 Starting stock scan • ${new Date().toLocaleString("en-IN")}\n`
         );
-
-        console.log("=================================\n");
 
         checkStock();
 
@@ -201,4 +163,3 @@ module.exports = {
     startStockChecker
 
 };
-

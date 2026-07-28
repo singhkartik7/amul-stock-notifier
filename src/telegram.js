@@ -58,23 +58,10 @@ ${productDetails}
             }
 
         );
-const now = new Date().toLocaleString("en-IN");
-      console.log(`
-====================================
-[${now}]
-Telegram Notification Sent
-====================================
 
-Chat ID : ${chatId}
-
-Product : ${product.name}
-
-Pincode : ${pincode}
-
-Quantity: ${product.inventory_quantity}
-
-====================================
-`);
+      console.log(
+    `✅ Sent → ${pincode} | ${product.product_name} | Qty: ${product.inventory_quantity}`
+);
 
     }
 
