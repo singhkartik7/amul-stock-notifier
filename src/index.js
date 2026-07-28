@@ -11,7 +11,9 @@ const {
 const {
     loadStockMap
 } = require("./models/stockModel");
-
+const {
+    loadUserNotifiedMap
+} = require("./models/userNotificationModel");
 
 
 const {
@@ -41,6 +43,9 @@ async function checkStock() {
 
         const stockMap =
             await loadStockMap();
+
+            const userNotifiedMap =
+    await loadUserNotifiedMap();
 
         const activeGroupedPreferences = {};
 
@@ -100,6 +105,8 @@ async function checkStock() {
     group.users,
 
     stockMap,
+
+    userNotifiedMap,
 
     sendNotification,
 

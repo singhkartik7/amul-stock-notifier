@@ -1,6 +1,9 @@
 const {
     saveStock
 } = require("./models/stockModel");
+const {
+    saveUserNotifiedStock
+} = require("./models/userNotificationModel");
 
 async function shouldNotify(
 
@@ -8,7 +11,11 @@ async function shouldNotify(
 
     stockMap,
 
+    userNotifiedMap,
+
     sendNotification,
+
+    userId,
 
     chatId,
 
@@ -20,6 +27,8 @@ async function shouldNotify(
 
     const key =
         `${storeId}|${product._id}`;
+const userKey =
+    `${userId}|${product._id}|${storeId}`;
 
     const currentStock =
         product.inventory_quantity;
@@ -28,26 +37,71 @@ async function shouldNotify(
         stockMap.has(key)
             ? stockMap.get(key)
             : 0;
+            const previousUserStock =
+    userNotifiedMap.has(userKey)
+        ? userNotifiedMap.get(userKey)
+        : 0;
 
-    if (
+if (
 
-        currentStock > 0 &&
-        currentStock !== previousStock
+    currentStock > 0 &&
+    currentStock !== previousUserStock
 
-    ) {
+) {
 
-        await sendNotification(
+    await sendNotification(
 
-            chatId,
+        chatId,
 
-            product,
+        product,
 
-            pincode
+        pincode
 
-        );
+    );
 
-    }
+    userNotifiedMap.set(
+        userKey,
+        currentStock
+    );
 
+    await saveUserNotifiedStock(
+
+        userId,
+
+        product._id,
+
+        storeId,
+
+        currentStock
+
+    );
+
+}
+else if (
+
+    currentStock === 0 &&
+    previousUserStock !== 0
+
+) {
+
+    userNotifiedMap.set(
+        userKey,
+        0
+    );
+
+    await saveUserNotifiedStock(
+
+        userId,
+
+        product._id,
+
+        storeId,
+
+        0
+
+    );
+
+}
     stockMap.set(
 
         key,

@@ -10,6 +10,8 @@ async function processProducts(
 
     stockMap,
 
+    userNotifiedMap,
+
     sendNotification,
 
     shouldNotify,
@@ -40,13 +42,17 @@ async function processProducts(
 
             product.url = generateProductUrl(product.name);
 
-            await shouldNotify(
+         await shouldNotify(
 
     product,
 
     stockMap,
 
+    userNotifiedMap,
+
     sendNotification,
+
+    user.userId,
 
     user.chatId,
 

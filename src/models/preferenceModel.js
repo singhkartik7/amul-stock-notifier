@@ -165,6 +165,8 @@ async function getGroupedPreferences() {
     const result = await pool.query(`
 SELECT
 
+    preferences.user_id,
+
     preferences.store_id,
 
     preferences.pincode,
@@ -176,7 +178,7 @@ SELECT
     users.email,
 
     products.product_name
-
+    
 FROM preferences
 
 JOIN users
@@ -217,18 +219,13 @@ for (const row of result.rows) {
 
     if (!user) {
 
-        user = {
-
+       user = {
+    userId: row.user_id,
     email: row.email,
-
     chatId: row.chat_id,
-
     pincode: row.pincode,
-
     notifyUntil: row.notify_until,
-
     products: []
-
 };
 
         grouped[row.store_id].users.push(user);
