@@ -2,6 +2,10 @@ const {
     generateProductUrl
 } = require("./productLinks");
 
+const {
+    saveStock
+} = require("./models/stockModel");
+
 async function processProducts(
 
     data,
@@ -29,7 +33,11 @@ async function processProducts(
     }
 
     for (const product of data.data) {
-
+await saveStock(
+    product._id,
+    storeId,
+    product.inventory_quantity
+);
         for (const user of users) {
 
             if (!user.products.includes(product.name)) {

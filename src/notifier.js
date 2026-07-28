@@ -1,6 +1,4 @@
-const {
-    saveStock
-} = require("./models/stockModel");
+
 const {
     saveUserNotifiedStock
 } = require("./models/userNotificationModel");
@@ -102,23 +100,10 @@ else if (
     );
 
 }
-    stockMap.set(
-
-        key,
-
-        currentStock
-
-    );
-
-    await saveStock(
-
-        product._id,
-
-        storeId,
-
-        currentStock
-
-    );
+   stockMap.set(
+    key,
+    currentStock
+);
 
 }
 
