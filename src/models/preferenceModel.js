@@ -198,6 +198,7 @@ ORDER BY preferences.store_id
     `);
 
     const grouped = {};
+    const storeMap = getStoreMapCache();
 
 for (const row of result.rows) {
 
@@ -205,6 +206,7 @@ for (const row of result.rows) {
 
         grouped[row.store_id] = {
 
+    alias: storeMap.get(row.store_id) || "unknown",
     users: []
 
 };

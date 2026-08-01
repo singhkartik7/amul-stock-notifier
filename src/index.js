@@ -103,9 +103,9 @@ async function checkStock() {
 
                 );
 
-                console.log(
-                    `📦 Store: ${storeId} | ${((Date.now() - storeStart) / 1000).toFixed(1)}s`
-                );
+               console.log(
+    `📦 ${group.alias} | ${storeId} | ${((Date.now() - storeStart) / 1000).toFixed(1)}s`
+);
 
                 await sleep(500);
 
