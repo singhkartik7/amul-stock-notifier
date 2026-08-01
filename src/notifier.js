@@ -29,7 +29,11 @@ const userKey =
     `${userId}|${product._id}|${storeId}`;
 
     const isBuyable =
-        Number(product.available) === 1;
+        Number(product.available) === 1 &&
+        (
+            product.inventory_low_stock_quantity === undefined ||
+            product.inventory_quantity >= product.inventory_low_stock_quantity
+        );
 
     const currentStock =
         isBuyable

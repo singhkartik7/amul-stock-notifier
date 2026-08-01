@@ -20,6 +20,10 @@ const {
     getProducts
 } = require("./services/productService");
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 let isRunning = false;
 
 async function checkStock() {
@@ -102,6 +106,8 @@ async function checkStock() {
                 console.log(
                     `📦 Store: ${storeId} | ${((Date.now() - storeStart) / 1000).toFixed(1)}s`
                 );
+
+                await sleep(500);
 
             }
 
