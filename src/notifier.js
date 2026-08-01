@@ -28,8 +28,13 @@ async function shouldNotify(
 const userKey =
     `${userId}|${product._id}|${storeId}`;
 
+    const isBuyable =
+        Number(product.available) === 1;
+
     const currentStock =
-        product.inventory_quantity;
+        isBuyable
+            ? product.inventory_quantity
+            : 0;
 
     const previousStock =
         stockMap.has(key)

@@ -9,7 +9,7 @@ async function loadUserNotifiedMap() {
     const map = new Map();
 
     for (const row of result.rows) {
-        const key = `${row.user_id}_${row.product_id}_${row.store_id}`;
+        const key = `${row.user_id}|${row.product_id}|${row.store_id}`;
         map.set(key, row.last_notified_stock);
     }
 
