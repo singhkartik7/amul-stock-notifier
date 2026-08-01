@@ -65,6 +65,7 @@ async function checkStock() {
 
                 activeGroupedPreferences[storeId] = {
 
+                    alias: group.alias,
                     users: activeUsers
 
                 };
