@@ -6,6 +6,14 @@ const {
     saveStock
 } = require("./models/stockModel");
 
+const {
+    getBuyableStock
+} = require("./utils/stock");
+
+const {
+    runWithConcurrency
+} = require("./utils/concurrency");
+
 async function processProducts(
 
     data,
@@ -36,41 +44,43 @@ async function processProducts(
 await saveStock(
     product._id,
     storeId,
-    product.inventory_quantity
+    getBuyableStock(product)
 );
-        for (const user of users) {
+        const eligibleUsers = users.filter(user =>
+            user.products.includes(product.name)
+        );
 
-            if (!user.products.includes(product.name)) {
+        productsFound += eligibleUsers.length;
 
-                continue;
+        product.url = generateProductUrl(product.name);
+
+        await runWithConcurrency(
+            eligibleUsers,
+            8,
+            async (user) => {
+
+                await shouldNotify(
+
+                    product,
+
+                    stockMap,
+
+                    userNotifiedMap,
+
+                    sendNotification,
+
+                    user.userId,
+
+                    user.chatId,
+
+                    user.pincode,
+
+                    storeId
+
+                );
 
             }
-
-            productsFound++;
-
-            product.url = generateProductUrl(product.name);
-
-         await shouldNotify(
-
-    product,
-
-    stockMap,
-
-    userNotifiedMap,
-
-    sendNotification,
-
-    user.userId,
-
-    user.chatId,
-
-    user.pincode,
-
-    storeId
-
-);
-
-        }
+        );
 
     }
 

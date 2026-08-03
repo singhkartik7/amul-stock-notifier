@@ -3,6 +3,10 @@ const {
     saveUserNotifiedStock
 } = require("./models/userNotificationModel");
 
+const {
+    getBuyableStock
+} = require("./utils/stock");
+
 async function shouldNotify(
 
     product,
@@ -28,17 +32,8 @@ async function shouldNotify(
 const userKey =
     `${userId}|${product._id}|${storeId}`;
 
-    const isBuyable =
-        Number(product.available) === 1 &&
-        (
-            product.inventory_low_stock_quantity === undefined ||
-            product.inventory_quantity >= product.inventory_low_stock_quantity
-        );
-
     const currentStock =
-        isBuyable
-            ? product.inventory_quantity
-            : 0;
+        getBuyableStock(product);
 
     const previousStock =
         stockMap.has(key)
